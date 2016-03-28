@@ -147,9 +147,8 @@ static const struct word custom_dict[] = {
 
 }, * custom_dict_start = custom_dict + __COUNTER__;
 
+static void sf_opt_prog_tools_init(void) __attribute__((constructor));
 static void sf_opt_prog_tools_init(void)
 {
 	sf_merge_custom_dictionary(dict_base_dummy_word, custom_dict_start);
 }
-
-static void (* const dictionary_initializer)(void) __attribute__((used)) __attribute__ ((section(".sf_init"))) = sf_opt_prog_tools_init;

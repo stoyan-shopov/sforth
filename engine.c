@@ -604,16 +604,8 @@ static uint8_t next_sym(void)
 }
 #include "dictionary.c"
 
-
-extern void(* const __start_sf_init)(void);
-extern void(* const __end_sf_init)(void);
-
 void sf_init(void)
 {
-void(* const * f)(void) = & __start_sf_init;
-	/* load extension dictionaries (if any) */
-	while (f != & __end_sf_init)
-		(* f ++)();
 	sf_reset();
 }
 

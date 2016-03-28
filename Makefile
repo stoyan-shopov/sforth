@@ -16,13 +16,13 @@ SFCORE_LIBRARY_OBJECTS = engine.o sf-arch-default.o sf-opt-file.o sf-opt-prog-to
 samples: sf sf-string sf-dict
 
 sf-dict: sample-dictionary.o sf-arch.o $(SFCORE_LIBRARY_OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ -Wl,--gc-sections,-Tlink.ld,-L.
+	$(CC) $(CFLAGS) -o $@ $^ -Wl,--gc-sections
 
 sf-string: sample-string.o sf-arch.o $(SFCORE_LIBRARY_OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ -Wl,--gc-sections,-Tlink.ld,-L.
+	$(CC) $(CFLAGS) -o $@ $^ -Wl,--gc-sections
 
 sf: sample-console.o sf-arch.o $(SFCORE_LIBRARY_OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ -Wl,--gc-sections,-Tlink.ld,-L.
+	$(CC) $(CFLAGS) -o $@ $^ -Wl,--gc-sections
 
 clean:
 	-rm $(SFCORE_LIBRARY_OBJECTS) sf sf-string sf-dict sf-arch.o sample-dictionary.o sample-string.o sample-console.o
