@@ -67,9 +67,10 @@ code. An ambiguous condition exists if the file is positioned outside the file b
 At the conclusion of the operation, FILE-POSITION returns the value ud.
 */
 static void do_reposition_file(void) { cell fd, offset; offset = sf_pop(); fd = sf_pop(); sffseek(fd, offset); }
-
+#if ENABLE_HDUMP
 static void do_hack_bin_dump(void)
 { /* ( address count --) */ size_t count = sf_pop(); void * buf = (void *) sf_pop(); int fd = open("out.bin", O_CREAT|O_WRONLY|O_TRUNC); if (fd != -1) { write(fd, buf, count); close(fd); } }
+#endif /* ENABLE_HDUMP */
 
 #include "sf-word-wizard.h"
 static struct word dict_base_dummy_word[1] = { MKWORD(0, 0, "", 0), };
@@ -78,7 +79,9 @@ static const struct word custom_dict[] = {
 	MKIMMWORD(dict_base_dummy_word,	0,		"s\"",		do_opt_file_s_quote),
 	MKWORD(custom_dict,		__COUNTER__,	"include",	do_include),
 	MKWORD(custom_dict,		__COUNTER__,	"reposition-file",	do_reposition_file),
+#if ENABLE_HDUMP
 	MKWORD(custom_dict,		__COUNTER__,	"hdump",	do_hack_bin_dump),
+#endif /* ENABLE_HDUMP */
 
 }, * custom_dict_start = custom_dict + __COUNTER__;
 

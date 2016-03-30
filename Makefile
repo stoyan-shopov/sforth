@@ -1,5 +1,5 @@
 HOST_MACHINE_FLAGS ?= -m32
-COMPILER_DEFINES ?= -DENGINE_32BIT
+COMPILER_DEFINES ?= -DENGINE_32BIT -DENABLE_HDUMP=1
 
 # sforth engine stack depth, in words
 STACK_DEPTH ?= 32
@@ -7,7 +7,7 @@ STACK_DEPTH ?= 32
 CORE_CELLS_COUNT ?= 128 * 1024
 
 CC ?= gcc
-CFLAGS = -Wall -Os -g -fomit-frame-pointer -fdata-sections -ffunction-sections \
+CFLAGS += -Wall -Os -g -fomit-frame-pointer -fdata-sections -ffunction-sections \
 	$(HOST_MACHINE_FLAGS) $(COMPILER_DEFINES) \
 	 -DSTACK_DEPTH="$(STACK_DEPTH)" \
 	 -DCORE_CELLS_COUNT="$(CORE_CELLS_COUNT)"
