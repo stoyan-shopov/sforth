@@ -23,6 +23,14 @@ THE SOFTWARE.
 #ifndef __CORE_WORDS_H__
 #define __CORE_WORDS_H__
 
+#ifndef FREESTANDING_ENVIRONMENT
+/* stdio.h is only needed for the definition of 'EOF' */
+#include <stdio.h>
+#else
+#define EOF	-1
+#endif
+
+
 #include "sf-cfg.h"
 #include "sf-arch.h"
 

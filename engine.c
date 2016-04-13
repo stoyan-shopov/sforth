@@ -23,8 +23,6 @@ THE SOFTWARE.
 
 void do_abort(void) __attribute__ ((noreturn));
 #include <stdbool.h>
-/* stdio.h is only needed for the definition of 'EOF' */
-#include <stdio.h>
 #include <setjmp.h>
 
 #include "engine.h"
