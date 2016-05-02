@@ -3305,3 +3305,57 @@ void /* "sf-reset" */	sf_reset(void)
 	here.cell = core;
 }
 
+#if EXCEPTIONS_ENABLED
+static struct exception_frame
+{
+	jmp_buf			jmpbuf;
+	int			sp, rsp;
+	struct word		** saved_ip;
+	struct exception_frame	* next;
+}
+* exception_stack;
+
+static void runtime_catch(void)
+{
+struct exception_frame frame;
+int x;
+
+	if (!(x = setjmp(frame.jmpbuf)))
+	{
+		/* chain exception frame on the exception stack */
+		frame.rsp = rsp;
+		frame.sp = sp;
+		frame.saved_ip = IP.word;
+		frame.next = exception_stack;
+		exception_stack = & frame;
+		print_str("running execute..."); do_cr();
+		do_execute();
+	}
+	if (x)
+	{
+		/* exception taken */
+		print_str("exception taken"); do_cr();
+		IP.word = frame.saved_ip;
+		rsp = frame.rsp;
+		sp = frame.sp;
+		/* discard 'catch' execution token stack slot cell */
+		sf_pop();
+	}
+	/* unwind exception stack */
+	exception_stack = frame.next;
+	sf_push(x);
+}
+
+static const struct word xt_runtime_catch = MAKE_SINGLE_WORD("<<< runtime-catch >>>", runtime_catch);
+
+void do_catch(void)
+{
+	* here.word ++ = & xt_runtime_catch;
+}
+
+
+void do_throw(void)
+{
+	longjmp(exception_stack->jmpbuf, sf_pop());
+}
+#endif
