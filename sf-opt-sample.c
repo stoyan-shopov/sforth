@@ -31,7 +31,6 @@ static void do_gcd(void)
 
 static struct word dict_base_dummy_word[1] = { MKWORD(0, 0, "", 0), };
 static const struct word custom_dict[] = {
-	/* override the sforth supplied engine reset */
 	MKWORD(dict_base_dummy_word,	0,		"squared",	do_squared),
 	MKWORD(custom_dict,		__COUNTER__,	"gcd",	do_gcd),
 
