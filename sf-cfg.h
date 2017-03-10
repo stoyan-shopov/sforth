@@ -21,17 +21,7 @@ THE SOFTWARE.
 */
 #include <stdint.h>
 
-#if defined ENGINE_64BIT
-typedef uint64_t cell;
-typedef int64_t scell;
-typedef __uint128_t dcell;
-typedef __int128_t sdcell;
-#elif defined ENGINE_32BIT
-typedef uint32_t cell;
-typedef int32_t scell;
-typedef uint64_t dcell;
-typedef int64_t sdcell;
-#else
-#error fatal: engine size not defined; define either 'ENGINE_32BIT' or 'ENGINE_64BIT'
-#endif
-
+typedef unsigned int cell;
+typedef unsigned long long int dcell;
+typedef signed int scell;
+typedef signed long long int sdcell;
