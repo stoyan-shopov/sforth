@@ -20,8 +20,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #include <stdint.h>
-
-typedef unsigned int cell;
-typedef unsigned long long int dcell;
-typedef signed int scell;
-typedef signed long long int sdcell;
+#if UINTPTR_MAX == 0xffffffff
+/* 32-bit */
+typedef uint32_t cell;
+typedef int32_t scell;
+typedef uint64_t dcell;
+typedef int64_t sdcell;
+#elif UINTPTR_MAX == 0xffffffffffffffff
+/* 64-bit */
+typedef uint64_t cell;
+typedef int64_t scell;
+typedef __uint128_t dcell;
+typedef __int128_t sdcell;
+#else
+#error "unsupported compiler target word size"
+#endif
