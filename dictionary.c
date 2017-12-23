@@ -3241,8 +3241,8 @@ void /* "?" */		do_question(void)
 
 void /* "dump" */		do_dump(void)
 {
-int cnt = pop();
-unsigned int addr = pop();
+cell cnt = pop();
+cell addr = pop();
 int i;
 int saved_base = base;
 	/* dump header */
