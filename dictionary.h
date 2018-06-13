@@ -2169,7 +2169,7 @@ MKWORD(dictionary,	__COUNTER__,	"#",		do_number_sign)
 
 /******************************************************************************/
 #if DO_C_QUOTE_WORD_ENABLED || defined GENERATE_WORD_PROTOTYPES
-/************/ MKWORD(dictionary,	__COUNTER__,	"c\"",	        do_c_quote)
+/************/ MKIMMWORD(dictionary,	__COUNTER__,	"c\"",	        do_c_quote)
 /*******************************************************************************
 % -------------------------------------------------------------------
 	C"	[c-quote] 
