@@ -500,7 +500,9 @@ reenter:
 	{
 		print_str(__func__);
 		print_str("(): starting execution of colon word: ");
-		push((cell) WP->name); do_count(); do_type(); do_cr();
+		/* handle ':noname' (i.e., unnamed) definitions */
+		if (WP->name) { push((cell) WP->name); do_count(); do_type(); do_cr(); }
+		else print_str("<<<unnamed (':noname' ?) execution token>>>\n");
 	}
 	IP.word = (struct word **) & WP->pfa;
 back:
