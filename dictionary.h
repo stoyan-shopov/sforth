@@ -638,8 +638,9 @@ MKWORD(dictionary,	__COUNTER__,	"#",		do_number_sign)
 *******************************************************************************/
 #endif
 
+#if DO_ACCEPT_WORD_ENABLED || defined GENERATE_WORD_PROTOTYPES
 /******************************************************************************/
-/************/ //MKWORD(dictionary,	__COUNTER__,	"accept",	do_accept, )
+/************/ MKWORD(dictionary,	__COUNTER__,	"accept",	do_accept)
 
 /*******************************************************************************
 	ACCEPT	 
@@ -656,8 +657,8 @@ MKWORD(dictionary,	__COUNTER__,	"#",		do_number_sign)
 	and the display is maintained in an implementation-defined way.
 	'+n_2' is the length of the string stored at 'c-addr'.
 *******************************************************************************/
-// THIS WORD IS NOT IMPLEMENTED; IF YOU NEED IT, YOU MUST DEFINE IT YOURSELF
-/******************************************************************************/
+#endif
+
 #if DO_ALIGN_WORD_ENABLED || defined GENERATE_WORD_PROTOTYPES
 /************/ MKWORD(dictionary,	__COUNTER__,	"align",	do_align)
 /*******************************************************************************

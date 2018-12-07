@@ -675,7 +675,7 @@ void /* "abs" */		do_abs(void)
 		{ scell x = spop(); spush(x >= 0 ? x : - x); }
 
 /******************************************************************************/
-/* void "accept" 	do_accept (void) */
+void /* "accept" */ 	do_accept (void)
 
 /*******************************************************************************
 	ACCEPT	 
@@ -692,8 +692,10 @@ void /* "abs" */		do_abs(void)
 	and the display is maintained in an implementation-defined way.
 	'+n_2' is the length of the string stored at 'c-addr'.
 *******************************************************************************/
-// THIS WORD IS NOT IMPLEMENTED; IF YOU NEED IT, YOU MUST DEFINE IT YOURSELF
-/******************************************************************************/
+	{ scell len = sf_pop(); cell x = 0; uint8_t * s = sf_pop(), c; if (len < 0) /* ambiguous condition */ len = 0;
+		while (len --) { c = sfgetc(); if (c == '\n') goto out; * s ++ = c; x ++; }
+		/* read remainder of line, until a new line terminator */ while (sfgetc() != '\n'); out: sf_push(x); }
+
 void /* "align" */	do_align(void)
 /*******************************************************************************
 	ALIGN	 

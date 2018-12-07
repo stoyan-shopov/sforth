@@ -64,6 +64,7 @@ THE SOFTWARE.
 #define DO_ABORT_WORD_ENABLED	1	// do_abort
 #define DO_ABORT_QUOTE_WORD_ENABLED	1	// do_abort_quote
 #define DO_ABS_WORD_ENABLED	1	// do_abs
+#define DO_ACCEPT_WORD_ENABLED	1	// do_accept
 #define DO_ALIGN_WORD_ENABLED	1	// do_align
 #define DO_ALIGNED_WORD_ENABLED	1	// do_aligned
 #define DO_ALLOT_WORD_ENABLED	1	// do_allot

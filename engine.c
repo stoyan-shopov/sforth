@@ -469,13 +469,23 @@ static void runtime_does(void)
 	latest->cfa = (void(*)(void)) (IP.cell + 1);
 	/* latest->is_smudged = 0; */
 }
-static void runtime_plus_loop(void)
+#if 0
+static void runtime_plus_loop_x(void)
 {
-sdcell cnt, limit, i;
+sdcell cnt, limit, step;
 
-	cnt = ((scell *)rstack)[rsp - 1];
-	limit = ((scell *)rstack)[rsp - 2];
-	i = cnt + spop();
+	if (rsp < 2)
+		sabort("runtime +loop: bad return stack");
+	cnt = ((cell *)rstack)[rsp - 1];
+	limit = ((cell *)rstack)[rsp - 2];
+	//i = cnt + spop();
+	step = spop();
+	if ((cnt <= limit - 1 && limit - 1 < cnt + step)
+			|| (cnt >= limit - 1 && limit > cnt + step))
+		dstack[sp] = 1;
+	else
+		dstack[sp] = 0;
+	/*
 	if (cnt < limit)
 	{
 		dstack[sp] = (i >= limit ? 1 : 0);
@@ -484,9 +494,71 @@ sdcell cnt, limit, i;
 	{
 		dstack[sp] = (i < limit ? 1 : 0);
 	}
+	*/
 	sp ++;
 	rstack[rsp - 1] = i;
 }
+#endif
+
+static void runtime_plus_loop(void)
+{
+static volatile scell limit1;
+scell cnt, limit/*, limit1*/;
+sdcell x;
+
+	if (rsp < 2)
+		sabort("runtime +loop: bad return stack");
+	cnt = ((scell *)rstack)[rsp - 1];
+	limit = ((scell *)rstack)[rsp - 2];
+	/* note that this may underflow from negative to positive (e.g., min_int - 1 == max_int */
+	limit1 = limit - 1;
+	x = cnt;
+	x += spop();
+
+	if (0 || limit1 < limit)
+	{
+		/* the usual case - no arithmetic underflow */
+		if (cnt < limit)
+			sf_push((x >= limit) ? 1 : 0);
+		else
+			sf_push((x < limit) ? 1 : 0);
+	}
+	else
+		/* arithmetic underflow */
+		sf_push(1)/*, *(int*)0=0*/;
+
+	rstack[rsp - 1] = x;
+}
+static void runtime_plus_loop_(void)
+{
+cell cnt, limit/*, limit1*/;
+cell x;
+static volatile cell limit1;
+
+	if (rsp < 2)
+		sabort("runtime +loop: bad return stack");
+	cnt = ((cell *)rstack)[rsp - 1];
+	limit = ((cell *)rstack)[rsp - 2];
+	/* note that this may underflow from negative to positive (e.g., min_int - 1 == max_int */
+	limit1 = limit - 1;
+	x = cnt;
+	x += pop();
+
+	if (0 || limit1 < limit)
+	{
+		/* the usual case - no arithmetic underflow */
+		if (cnt < limit)
+			sf_push((x >= limit) ? 1 : 0);
+		else
+			sf_push((x < limit) ? 1 : 0);
+	}
+	else
+		/* arithmetic underflow */
+		sf_push(1)/*, *(int*)0=0*/;
+
+	rstack[rsp - 1] = x;
+}
+
 static void runtime_colon(void)
 {
 struct word * w;
