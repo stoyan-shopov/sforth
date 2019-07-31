@@ -568,7 +568,7 @@ int sf_get_results(cell results[], int nr_results)
 {
 int i, j;
 
-	i = nr_results;
+	i = (sp > nr_results) ? nr_results : sp;
 	j = 0;
 	while (sp && nr_results --)
 		results[-- i] = sf_pop(), j ++;
