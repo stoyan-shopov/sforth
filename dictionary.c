@@ -558,6 +558,13 @@ void /* ">number" */      do_to_number(void)
 	dcell res; bool sign = false; cell i = pop(); uint8_t c, * s = (uint8_t *) pop();
 	res = popd();
 	cell saved_base = base;
+	/* first, handle character literals, in the form: 'x' */
+	if (i == 3 && s[0] == '\'' && s[2] == '\'')
+	{
+		res += (unsigned) s[1];
+		i = 0;
+		s += 3;
+	}
 	/* handle numeric base selection symbols */
 	if (i) switch (*s)
 	{
