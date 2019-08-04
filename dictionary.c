@@ -2852,6 +2852,7 @@ int i;
 				   case 'f': c = '\f'; break;
 				   case 'l': c = 10; break;
 				   case 'm': * s ++ = 13; c = 10; break;
+				   case 'n': c = '\n'; break;
 				   case 'r': c = 13; break;
 				   case '"':
 				   case 'q': c = '"'; break;
