@@ -198,7 +198,7 @@ static struct input_spec
 			 *		when operating with the stack; making
 			 *		such enumerations explicitly 'non-short'
 			 *		should save much grief */
-			SOURCE_ID_STRING		= (unsigned) -1,
+			SOURCE_ID_STRING		= (scell) -1,
 		}
 		source_id;
 		/* any other number designates a file identifier */
