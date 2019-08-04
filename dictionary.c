@@ -2587,10 +2587,8 @@ int i;
 		/* special case for whitespace characters */
 		for (i = input_spec.idx; i < input_spec.len; i ++)
 			if (!xisspace(i[s]))
-			{
-				input_spec.idx = i;
 				break;
-			}
+		input_spec.idx = i;
 		for (; i < input_spec.len; i ++)
 			if (xisspace(i[s]))
 				break;

@@ -1,4 +1,4 @@
-HOST_MACHINE_FLAGS ?= -m32
+HOST_MACHINE_FLAGS ?=
 COMPILER_DEFINES ?= -DENABLE_HDUMP=1
 
 # sforth engine stack depth, in words
