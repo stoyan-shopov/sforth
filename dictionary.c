@@ -2859,6 +2859,30 @@ int i;
 				   case 'v': c = 11; break;
 				   case 'z': c = 0; break;
 				   case '\\': c = '\\'; break;
+				   case 'x':
+					      {
+						      uint8_t x1 = xtolower(next_sym()), x2 = xtolower(next_sym());
+						      /* Validate hex digits */
+						      if ((('0' <= x1 && x1 <= '9') || ('a' <= x1 && x1 <= 'f'))
+								      && (('0' <= x2 && x2 <= '9') || ('a' <= x2 && x2 <= 'f')))
+						      {
+							      if (x1 <= '9')
+								      x1 -= '0';
+							      else
+								      x1 -= 'a', x1 += 10;
+							      if (x2 <= '9')
+								      x2 -= '0';
+							      else
+								      x2 -= 'a', x2 += 10;
+							      c = (x1 << 4) + x2;
+						      }
+						      else
+						      {
+							      print_str("error: bad hexadecimal digit in string escape character conversion, ignoring hex escape sequence\n");
+							      c = 0;
+						      }
+					      }
+					      break;
 				   default: print_str("warning: unknown/invalid escape sequence in escaped string requested, ignoring\n");
 			   }
 			   /* fall out */
