@@ -558,6 +558,13 @@ void /* ">number" */      do_to_number(void)
 	dcell res; bool sign = false; cell i = pop(); uint8_t c, * s = (uint8_t *) pop();
 	res = popd();
 	cell saved_base = base;
+	/* first, handle character literals, in the form: 'x' */
+	if (i == 3 && s[0] == '\'' && s[2] == '\'')
+	{
+		res += (unsigned) s[1];
+		i = 0;
+		s += 3;
+	}
 	/* handle numeric base selection symbols */
 	if (i) switch (*s)
 	{
@@ -2582,10 +2589,8 @@ int i;
 		/* special case for whitespace characters */
 		for (i = input_spec.idx; i < input_spec.len; i ++)
 			if (!xisspace(i[s]))
-			{
-				input_spec.idx = i;
 				break;
-			}
+		input_spec.idx = i;
 		for (; i < input_spec.len; i ++)
 			if (xisspace(i[s]))
 				break;
@@ -2847,6 +2852,7 @@ int i;
 				   case 'f': c = '\f'; break;
 				   case 'l': c = 10; break;
 				   case 'm': * s ++ = 13; c = 10; break;
+				   case 'n': c = '\n'; break;
 				   case 'r': c = 13; break;
 				   case '"':
 				   case 'q': c = '"'; break;
@@ -2854,6 +2860,30 @@ int i;
 				   case 'v': c = 11; break;
 				   case 'z': c = 0; break;
 				   case '\\': c = '\\'; break;
+				   case 'x':
+					      {
+						      uint8_t x1 = xtolower(next_sym()), x2 = xtolower(next_sym());
+						      /* Validate hex digits */
+						      if ((('0' <= x1 && x1 <= '9') || ('a' <= x1 && x1 <= 'f'))
+								      && (('0' <= x2 && x2 <= '9') || ('a' <= x2 && x2 <= 'f')))
+						      {
+							      if (x1 <= '9')
+								      x1 -= '0';
+							      else
+								      x1 -= 'a', x1 += 10;
+							      if (x2 <= '9')
+								      x2 -= '0';
+							      else
+								      x2 -= 'a', x2 += 10;
+							      c = (x1 << 4) + x2;
+						      }
+						      else
+						      {
+							      print_str("error: bad hexadecimal digit in string escape character conversion, ignoring hex escape sequence\n");
+							      c = 0;
+						      }
+					      }
+					      break;
 				   default: print_str("warning: unknown/invalid escape sequence in escaped string requested, ignoring\n");
 			   }
 			   /* fall out */
@@ -3307,3 +3337,57 @@ void /* "sf-reset" */	sf_reset(void)
 	here.cell = core;
 }
 
+#if EXCEPTIONS_ENABLED
+static struct exception_frame
+{
+	jmp_buf			jmpbuf;
+	int			sp, rsp;
+	struct word		** saved_ip;
+	struct exception_frame	* next;
+}
+* exception_stack;
+
+static void runtime_catch(void)
+{
+struct exception_frame frame;
+int x;
+
+	if (!(x = setjmp(frame.jmpbuf)))
+	{
+		/* chain exception frame on the exception stack */
+		frame.rsp = rsp;
+		frame.sp = sp;
+		frame.saved_ip = IP.word;
+		frame.next = exception_stack;
+		exception_stack = & frame;
+		print_str("running execute..."); do_cr();
+		do_execute();
+	}
+	if (x)
+	{
+		/* exception taken */
+		print_str("exception taken"); do_cr();
+		IP.word = frame.saved_ip;
+		rsp = frame.rsp;
+		sp = frame.sp;
+		/* discard 'catch' execution token stack slot cell */
+		sf_pop();
+	}
+	/* unwind exception stack */
+	exception_stack = frame.next;
+	sf_push(x);
+}
+
+static const struct word xt_runtime_catch = MAKE_SINGLE_WORD("<<< runtime-catch >>>", runtime_catch);
+
+void do_catch(void)
+{
+	* here.word ++ = & xt_runtime_catch;
+}
+
+
+void do_throw(void)
+{
+	longjmp(exception_stack->jmpbuf, sf_pop());
+}
+#endif

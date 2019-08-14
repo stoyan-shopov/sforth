@@ -198,7 +198,7 @@ static struct input_spec
 			 *		when operating with the stack; making
 			 *		such enumerations explicitly 'non-short'
 			 *		should save much grief */
-			SOURCE_ID_STRING		= (unsigned) -1,
+			SOURCE_ID_STRING		= (scell) -1,
 		}
 		source_id;
 		/* any other number designates a file identifier */
@@ -469,8 +469,8 @@ static void runtime_does(void)
 	latest->cfa = (void(*)(void)) (IP.cell + 1);
 	/* latest->is_smudged = 0; */
 }
-#if 0
-static void runtime_plus_loop_x(void)
+#if 1
+static void runtime_plus_loop(void)
 {
 sdcell cnt, limit, step;
 
@@ -478,29 +478,18 @@ sdcell cnt, limit, step;
 		sabort("runtime +loop: bad return stack");
 	cnt = ((cell *)rstack)[rsp - 1];
 	limit = ((cell *)rstack)[rsp - 2];
-	//i = cnt + spop();
 	step = spop();
 	if ((cnt <= limit - 1 && limit - 1 < cnt + step)
-			|| (cnt >= limit - 1 && limit > cnt + step))
+			|| (cnt + step <= limit - 1 && limit - 1 < cnt))
 		dstack[sp] = 1;
 	else
 		dstack[sp] = 0;
-	/*
-	if (cnt < limit)
-	{
-		dstack[sp] = (i >= limit ? 1 : 0);
-	}
-	else if (cnt >= limit)
-	{
-		dstack[sp] = (i < limit ? 1 : 0);
-	}
-	*/
 	sp ++;
-	rstack[rsp - 1] = i;
+	rstack[rsp - 1] = step + cnt;
 }
 #endif
 
-static void runtime_plus_loop(void)
+static void runtime_plus_loop_1(void)
 {
 static volatile scell limit1;
 scell cnt, limit/*, limit1*/;
@@ -529,7 +518,7 @@ sdcell x;
 
 	rstack[rsp - 1] = x;
 }
-static void runtime_plus_loop_(void)
+static void runtime_plus_loop_2(void)
 {
 cell cnt, limit/*, limit1*/;
 cell x;

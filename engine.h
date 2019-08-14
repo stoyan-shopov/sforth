@@ -161,12 +161,6 @@ struct word
 	};
 };
 
-#if 0
-#include "sf-opt-string.h"
-#include "sf-opt-prog-tools.h"
-#include "sf-opt-file.h"
-#endif
-
 /* environment settings words */
 void do_cr_echo(void);
 void do_colon_debug(void);
@@ -236,15 +230,10 @@ void sf_rot(void);
 void sf_pick(void);
 /* roll routines */
 void sf_roll(void);
-
 int sf_get_depth(void);
-
 int sf_get_results(cell results[], int nr_results);
-
-
 void sf_reset(void);
 void sf_merge_custom_dictionary(struct word * dict_end, const struct word * dict_start);
-
 void sf_dump_current_parse_loc(void);
 
 void sf_init(void);
