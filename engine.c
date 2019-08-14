@@ -472,21 +472,33 @@ static void runtime_does(void)
 #if 1
 static void runtime_plus_loop(void)
 {
-sdcell cnt, limit, step;
+sdcell index, index1, limit, step;
 
 	if (rsp < 2)
 		sabort("runtime +loop: bad return stack");
-	cnt = ((cell *)rstack)[rsp - 1];
-	limit = ((cell *)rstack)[rsp - 2];
+	index = ((scell *)rstack)[rsp - 1];
+	limit = ((scell *)rstack)[rsp - 2];
 	step = spop();
-	if ((cnt <= limit - 1 && limit - 1 < cnt + step)
-			|| (cnt + step <= limit - 1 && limit - 1 < cnt))
+	index1 = index + step;
+	int sindex, sstep, slimit, sindex1;
+	sindex = (index < 0) ? 1 : 0;
+	sindex1 = ((scell) index + (scell) step < 0) ? 1 : 0;
+	sstep = (step < 0) ? 1 : 0;
+	slimit = (limit < 0) ? 1 : 0;
+
+	if (!(sindex ^ sstep) && (sindex ^ sindex1))
+		/* signed overflow */
+		print_str("signed overflow\n"), index = (cell) index, index1 = (cell) index1, limit = (cell) limit;
+
+	if ((index < limit && limit <= index1)
+			|| (index1 < limit && limit <= index))
 		dstack[sp] = 1;
 	else
 		dstack[sp] = 0;
 	sp ++;
-	rstack[rsp - 1] = step + cnt;
+	rstack[rsp - 1] = step + index;
 }
+
 #endif
 
 static void runtime_plus_loop_1(void)
