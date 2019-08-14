@@ -469,15 +469,15 @@ static void runtime_does(void)
 	latest->cfa = (void(*)(void)) (IP.cell + 1);
 	/* latest->is_smudged = 0; */
 }
-#if 1
+
 static void runtime_plus_loop(void)
 {
-sdcell index, index1, limit, step;
+scell index, index1, limit, step;
 
 	if (rsp < 2)
 		sabort("runtime +loop: bad return stack");
-	index = ((scell *)rstack)[rsp - 1];
-	limit = ((scell *)rstack)[rsp - 2];
+	index = rstack[rsp - 1];
+	limit = rstack[rsp - 2];
 	step = spop();
 	index1 = index + step;
 	int sindex, sstep, slimit, sindex1;
@@ -487,19 +487,27 @@ sdcell index, index1, limit, step;
 	slimit = (limit < 0) ? 1 : 0;
 
 	if (!(sindex ^ sstep) && (sindex ^ sindex1))
+	{
 		/* signed overflow */
-		print_str("signed overflow\n"), index = (cell) index, index1 = (cell) index1, limit = (cell) limit;
-
-	if ((index < limit && limit <= index1)
-			|| (index1 < limit && limit <= index))
-		dstack[sp] = 1;
+		print_str("signed overflow\n");
+		if (((cell)index < (cell)limit && (cell)limit <= (cell)index1)
+				|| ((cell)index1 < (cell)limit && (cell)limit <= (cell)index))
+			dstack[sp] = 1;
+		else
+			dstack[sp] = 0;
+	}
 	else
-		dstack[sp] = 0;
+	{
+		if ((index < limit && limit <= index1)
+				|| (index1 < limit && limit <= index))
+			dstack[sp] = 1;
+		else
+			dstack[sp] = 0;
+	}
+
 	sp ++;
 	rstack[rsp - 1] = step + index;
 }
-
-#endif
 
 static void runtime_plus_loop_1(void)
 {
