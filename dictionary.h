@@ -2769,7 +2769,7 @@ MKWORD(dictionary,	__COUNTER__,	"sf-reset",	sf_reset)
 #endif
 
 #if EXCEPTIONS_ENABLED
-MKIMMWORD(dictionary,	__COUNTER__,	"catch",	do_catch)
+MKWORD(dictionary,	__COUNTER__,	"catch",	do_catch)
 MKWORD(dictionary,	__COUNTER__,	"throw",	do_throw)
 #endif
 

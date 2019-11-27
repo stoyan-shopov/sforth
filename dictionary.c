@@ -3315,7 +3315,7 @@ static struct exception_frame
 }
 * exception_stack;
 
-static void runtime_catch(void)
+void do_catch(void)
 {
 struct exception_frame frame;
 int x;
@@ -3346,16 +3346,10 @@ int x;
 	sf_push(x);
 }
 
-static const struct word xt_runtime_catch = MAKE_SINGLE_WORD("<<< runtime-catch >>>", runtime_catch);
-
-void do_catch(void)
-{
-	* here.word ++ = & xt_runtime_catch;
-}
-
-
 void do_throw(void)
 {
-	longjmp(exception_stack->jmpbuf, sf_pop());
+	if (sf_top())
+		longjmp(exception_stack->jmpbuf, sf_pop());
+	sf_pop();
 }
 #endif
