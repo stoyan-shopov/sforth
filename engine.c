@@ -594,7 +594,7 @@ int i;
 void sf_merge_custom_dictionary(struct word * dict_end, const struct word * dict_start)
 {
 	dict_end->link = latest;
-	* ((const struct word **) & latest) = dict_start;
+	latest = dict_start;
 }
 
 static uint8_t next_sym(void)
